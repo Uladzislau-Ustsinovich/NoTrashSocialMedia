@@ -51,6 +51,8 @@ xcrun simctl io booted screenshot out.png
 ## Rules
 
 - Never apply filters on login, signup, two-factor or challenge pages; doing so causes login loops. List those paths in the manifest's `authPaths`.
+- A `url` deep-link parameter is untrusted. Validate it with `resolveStartUrl` (a literal `https://host/` prefix match); never use React Native's `URL` for a host check, it can be fooled and behaves differently from Node's in tests.
+- The injected runtime only acts on the platform's own hostnames (`hosts` in the config); on any other site it does nothing.
 - Keep `originWhitelist={['*']}` on the WebView. Without it, X's `x-safari-https://` redirect opens Safari.
 - Injected code runs inside the third-party page. Keep it self-contained (no imports at runtime), wrap it in an IIFE, and make it safe to run more than once.
 - Prefer stable selectors (`href`, `aria-label`, `role`, `data-*`) over generated class names.

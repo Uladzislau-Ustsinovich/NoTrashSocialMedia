@@ -16,6 +16,9 @@ const screenOptions = {
   contentStyle: { backgroundColor: colors.background },
 } as const;
 
+/** Keeps the home screen under a screen opened by a deep link, so there is always a way back. */
+export const unstable_settings = { anchor: 'index' };
+
 export default function RootLayout() {
   useEffect(() => {
     void hydrateToggles();

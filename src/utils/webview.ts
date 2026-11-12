@@ -25,8 +25,13 @@ export function isWebUrl(url: string): boolean {
   return WEB_URL.test(url);
 }
 
-/** Only web pages load; app deep links (instagram://, intent://) would leave the app. */
+/**
+ * Only web pages load in the main frame; app deep links (instagram://, intent://,
+ * x-safari-https://) would leave the app. Sub-frames are left alone: sites use blob: and data:
+ * frames for media and checks.
+ */
 export function shouldStartLoad(request: ShouldStartLoadRequest): boolean {
+  if (request.isTopFrame === false) return true;
   return isWebUrl(request.url) || /^about:/i.test(request.url);
 }
 
@@ -35,12 +40,21 @@ export function navigateScript(url: string): string {
   return `window.location.href = ${JSON.stringify(url)}; true;`;
 }
 
-/** The page to open first: `requested` if it is on the same site as `homeUrl`, otherwise `homeUrl`. */
+/** `https://host` of one of our own URLs. Not for untrusted input. */
+export function originOf(url: string): string {
+  return /^https:\/\/[^/?#]+/.exec(url)?.[0] ?? '';
+}
+
+/**
+ * The page to open first: `requested` if it is an https page on the same site as `homeUrl`,
+ * otherwise `homeUrl`.
+ *
+ * The check is a literal prefix match on purpose. `requested` can come from a deep link sent by
+ * another app, and React Native's `URL` parses hosts loosely enough to be fooled
+ * (`https://evil.example/@www.instagram.com` reports the host as www.instagram.com).
+ */
 export function resolveStartUrl(requested: string | undefined, homeUrl: string): string {
-  if (!requested) return homeUrl;
-  try {
-    return new URL(requested).host === new URL(homeUrl).host ? requested : homeUrl;
-  } catch {
-    return homeUrl;
-  }
+  const origin = originOf(homeUrl);
+  if (!requested || !origin) return homeUrl;
+  return requested === origin || requested.startsWith(`${origin}/`) ? requested : homeUrl;
 }

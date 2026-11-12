@@ -41,6 +41,8 @@ export type Platform = {
   /** Not offered in the app yet. The manifest stays so the work is not lost. */
   hidden?: boolean;
   homeUrl: string;
+  /** Other hostnames of the same site where filters should also run. The home host is always included. */
+  extraHosts?: string[];
   /** Paths (and everything under them) where filters must never run: login, 2FA, challenges. */
   authPaths: string[];
   toggles: Toggle[];

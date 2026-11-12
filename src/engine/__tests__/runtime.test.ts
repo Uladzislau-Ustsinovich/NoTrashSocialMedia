@@ -4,13 +4,14 @@ import type { InjectionConfig } from '../buildInjection';
 import { RUNTIME } from '../runtime';
 
 /** A page stub with just enough DOM for the runtime: one style element, history and location. */
-function createPage(pathname: string, search = '') {
+function createPage(pathname: string, search = '', hostname = 'site.test') {
   const style = { id: '', textContent: '' };
   let styleAttached = false;
   const attributes: Record<string, string> = {};
   const replaced: string[] = [];
 
   const location = {
+    hostname,
     pathname,
     search,
     href: `https://site.test${pathname}${search}`,
@@ -62,6 +63,7 @@ const baseConfig: InjectionConfig = {
   css: '.reels{display:none !important}',
   blockRoutes: ['/reels'],
   authPaths: ['/accounts'],
+  hosts: ['site.test'],
   home: 'https://site.test/',
   selectors: {},
   textRules: [],
@@ -98,6 +100,17 @@ describe('runtime', () => {
       ...baseConfig,
       blockRoutes: ['/accounts'],
       redirects: [{ path: '/accounts/login/', unlessSearch: 'v=1', to: '/elsewhere' }],
+    });
+
+    expect(page.style.textContent).toBe('');
+    expect(page.replaced).toEqual([]);
+  });
+
+  it('does nothing on another site reached through a link', () => {
+    const page = createPage('/reels/', '', 'elsewhere.test');
+    page.runtime.apply({
+      ...baseConfig,
+      redirects: [{ path: '/reels/', unlessSearch: 'v=1', to: '/elsewhere' }],
     });
 
     expect(page.style.textContent).toBe('');

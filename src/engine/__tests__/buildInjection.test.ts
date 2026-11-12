@@ -50,6 +50,11 @@ describe('buildConfig', () => {
     expect(config.clickRules).toEqual([{ paths: ['/home'], when: '.w', click: '.c' }]);
     expect(config.authPaths).toEqual(['/login']);
     expect(config.home).toBe('https://example.com/');
+    expect(config.hosts).toEqual(['example.com']);
+    expect(buildConfig({ ...platform, extraHosts: ['m.example.com'] }, () => true).hosts).toEqual([
+      'example.com',
+      'm.example.com',
+    ]);
     expect(config.debug).toBe(true);
   });
 

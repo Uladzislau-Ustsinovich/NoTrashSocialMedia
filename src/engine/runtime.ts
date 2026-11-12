@@ -9,7 +9,7 @@ export const RUNTIME = `(function () {
   if (window.__NT) return;
 
   var STYLE_ID = 'nt-style';
-  var cfg = { css: '', blockRoutes: [], authPaths: [], home: '/', selectors: {}, textRules: [], clickRules: [], redirects: [], debug: false };
+  var cfg = { css: '', blockRoutes: [], authPaths: [], hosts: [], home: '/', selectors: {}, textRules: [], clickRules: [], redirects: [], debug: false };
   var rulesTimer = null;
   var lastClick = 0;
   var reportTimer = null;
@@ -23,8 +23,10 @@ export const RUNTIME = `(function () {
     return false;
   }
 
+  // Filters stay off on sign-in pages, and on every other site the user reaches through a link:
+  // the rules are written for one site's paths and markup and would misfire elsewhere.
   function isAuthPage() {
-    return under(cfg.authPaths, location.pathname);
+    return cfg.hosts.indexOf(location.hostname) === -1 || under(cfg.authPaths, location.pathname);
   }
 
   function syncStyle() {

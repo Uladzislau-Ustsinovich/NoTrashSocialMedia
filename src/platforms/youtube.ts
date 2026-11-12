@@ -9,6 +9,7 @@ export const youtube: Platform = {
   // Hidden until sign-in is sorted out.
   hidden: true,
   homeUrl: 'https://m.youtube.com/',
+  extraHosts: ['www.youtube.com'],
   authPaths: ['/signin', '/ServiceLogin'],
   toggles: [
     {

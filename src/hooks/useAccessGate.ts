@@ -8,7 +8,7 @@ import { secondsOn } from '@/utils/usage';
 import { useNow } from './useNow';
 
 /** What stands between the user and the platform: nothing, the pause, or today's limit. */
-export type Gate = 'open' | 'pause' | 'limit';
+type Gate = 'open' | 'pause' | 'limit';
 
 /**
  * Decides whether a platform may be shown. The limit wins over the pause. `ready` is false until
@@ -53,7 +53,10 @@ export function useAccessGate(platformId: string | undefined) {
     secondsToday,
     finishPause: () => setEnteredId(platformId),
     extend: () => {
-      if (platformId) extendLimit(platformId);
+      if (!platformId) return;
+      extendLimit(platformId);
+      // Asking for more minutes is already a deliberate choice; do not spend them on the pause.
+      setEnteredId(platformId);
     },
   };
 }

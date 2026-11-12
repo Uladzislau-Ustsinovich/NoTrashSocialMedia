@@ -1,4 +1,5 @@
 import type { Platform } from '@/platforms/types';
+import { originOf } from '@/utils/webview';
 
 import { RUNTIME } from './runtime';
 
@@ -9,6 +10,8 @@ export type InjectionConfig = {
   css: string;
   blockRoutes: string[];
   authPaths: string[];
+  /** Hostnames the config applies to. On any other site the runtime does nothing. */
+  hosts: string[];
   home: string;
   /** Selectors per enabled toggle, used by the runtime to report how many elements each one matches. */
   selectors: Record<string, string[]>;
@@ -54,6 +57,7 @@ export function buildConfig(
     css: rules.join('\n'),
     blockRoutes,
     authPaths: platform.authPaths,
+    hosts: [originOf(platform.homeUrl).replace('https://', ''), ...(platform.extraHosts ?? [])],
     home: platform.homeUrl,
     selectors,
     textRules,
