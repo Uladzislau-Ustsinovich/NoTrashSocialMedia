@@ -59,6 +59,11 @@ export const styles = StyleSheet.create({
     fontSize: 12.5,
     fontWeight: '600',
   },
+  usage: {
+    color: colors.textMuted,
+    fontSize: 12.5,
+    marginTop: 2,
+  },
   filtersButton: {
     width: 42,
     height: 42,

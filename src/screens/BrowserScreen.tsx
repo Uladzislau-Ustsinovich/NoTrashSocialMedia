@@ -10,6 +10,7 @@ import { LoadProgressBar } from '@/components/LoadProgressBar';
 import { useFilterInjection } from '@/hooks/useFilterInjection';
 import { useLoadProgress } from '@/hooks/useLoadProgress';
 import { usePlatformParam } from '@/hooks/usePlatformParam';
+import { useUsageTimer } from '@/hooks/useUsageTimer';
 import { useWebViewNavigation } from '@/hooks/useWebViewNavigation';
 import { ORIGIN_WHITELIST, USER_AGENT, resolveStartUrl, shouldStartLoad } from '@/utils/webview';
 
@@ -31,6 +32,7 @@ export default function BrowserScreen() {
   const navigation = useWebViewNavigation(webViewRef);
   const { barStyle, onLoadProgress } = useLoadProgress();
   const { ready, injection } = useFilterInjection(platform, webViewRef);
+  useUsageTimer(platform?.id);
 
   if (!platform) {
     return (

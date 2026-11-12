@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 
 import { WelcomeOverlay } from '@/components/WelcomeOverlay';
 import { hydrateToggles } from '@/store/toggles';
+import { hydrateUsage } from '@/store/usage';
 import { colors } from '@/theme';
 
 const screenOptions = {
@@ -17,6 +18,7 @@ const screenOptions = {
 export default function RootLayout() {
   useEffect(() => {
     void hydrateToggles();
+    void hydrateUsage();
   }, []);
 
   return (

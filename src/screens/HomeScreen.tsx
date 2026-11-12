@@ -6,9 +6,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { PlatformCard } from '@/components/PlatformCard';
 import { PLATFORMS } from '@/platforms';
 import { useToggleState } from '@/store/toggles';
+import { useUsageLog } from '@/store/usage';
 import { useWelcomeDone } from '@/store/welcome';
 import { greeting } from '@/utils/greeting';
 import { countActiveToggles } from '@/utils/toggles';
+import { secondsOn } from '@/utils/usage';
 
 import { styles } from './HomeScreen.styles';
 
@@ -19,6 +21,8 @@ export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const { overrides } = useToggleState();
   const welcomeDone = useWelcomeDone();
+  const usage = useUsageLog();
+  const now = new Date();
 
   return (
     <ScrollView
@@ -36,7 +40,7 @@ export default function HomeScreen() {
             <Text style={styles.brandText}>NoTrash</Text>
           </Animated.View>
           <Animated.View entering={enter(1)} style={styles.heading}>
-            <Text style={styles.title}>{greeting(new Date().getHours())}</Text>
+            <Text style={styles.title}>{greeting(now.getHours())}</Text>
             <Text style={styles.subtitle}>Pick a feed. The bait stays out.</Text>
           </Animated.View>
           <View style={styles.cards}>
@@ -45,6 +49,7 @@ export default function HomeScreen() {
                 <PlatformCard
                   platform={platform}
                   activeCount={countActiveToggles(platform, overrides)}
+                  secondsToday={secondsOn(usage, platform.id, now)}
                   onOpen={() =>
                     router.push({ pathname: '/browser/[platform]', params: { platform: platform.id } })
                   }

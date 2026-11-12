@@ -3,6 +3,7 @@ import { Text, View } from 'react-native';
 
 import type { Platform } from '@/platforms';
 import { colors } from '@/theme';
+import { formatDuration } from '@/utils/usage';
 
 import { styles } from './PlatformCard.styles';
 import { PressableScale } from './PressableScale';
@@ -10,11 +11,13 @@ import { PressableScale } from './PressableScale';
 type Props = {
   platform: Platform;
   activeCount: number;
+  /** Seconds spent on this platform today. */
+  secondsToday: number;
   onOpen: () => void;
   onOpenFilters: () => void;
 };
 
-export function PlatformCard({ platform, activeCount, onOpen, onOpenFilters }: Props) {
+export function PlatformCard({ platform, activeCount, secondsToday, onOpen, onOpenFilters }: Props) {
   return (
     <PressableScale
       accessibilityRole="button"
@@ -36,6 +39,9 @@ export function PlatformCard({ platform, activeCount, onOpen, onOpenFilters }: P
             {activeCount} of {platform.toggles.length} filters on
           </Text>
         </View>
+        {secondsToday > 0 ? (
+          <Text style={styles.usage}>{formatDuration(secondsToday)} today</Text>
+        ) : null}
       </View>
       <PressableScale
         accessibilityRole="button"
