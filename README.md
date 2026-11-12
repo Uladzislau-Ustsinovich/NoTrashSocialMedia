@@ -44,18 +44,42 @@ Each switch is defined in `src/platforms/`. Suggested posts and ads on Instagram
 - Filters depend on each site's page structure and break when the sites change it.
 - The sites' terms of service do not welcome wrappers, and app stores sometimes reject them. A store release is planned (iOS first, then Android), so the app ships native features of its own on top of the filtering.
 
+## Focus tools
+
+Set per site on its filters screen, under "Focus":
+
+- **Pause before opening:** a 5, 10 or 20 second breathing countdown with a way out.
+- **Daily limit:** once today's time reaches it, the site is replaced by a "done for today" screen; "5 more minutes" lifts it briefly.
+- **Grayscale:** shows the site without colour.
+
+The home screen shows the time spent on each site today. Usage time is kept on the device for 14 days and can be erased from the About screen.
+
+## Tests
+
+```bash
+npm test            # Jest unit tests
+npm run typecheck
+```
+
+## Releasing
+
+See [docs/release.md](docs/release.md) for the App Store steps and [docs/store-listing.md](docs/store-listing.md) for the listing text. The privacy policy is [PRIVACY.md](PRIVACY.md).
+
 ## Open items
 
 - YouTube is hidden. Before re-enabling: sign-in (Google may refuse embedded browsers) and the "Home feed" switch.
 - Instagram "Suggested posts" and "Ads" match English labels only.
 - Instagram's "For you" feed sticks on a spinner when most of it is hidden; use the Following feed.
 - X Explore still shows "Who to follow" and "Posts For You".
-- No unit tests yet.
-- Store release: app name, bundle identifier, icon, privacy policy and licence are undecided.
+- Store release: needs an Apple Developer account, a public address for the privacy policy, screenshots and demo accounts for review. The bundle identifier in `app.json` is a default to confirm before the first upload.
+
+## Licence
+
+MIT. See [LICENSE](LICENSE).
 
 ## Stack
 
-Expo, TypeScript, Expo Router, `react-native-webview`, `react-native-reanimated` for animations, on-device storage for settings.
+Expo, TypeScript, Expo Router, `react-native-webview`, `react-native-reanimated` for animations, on-device storage for settings, Jest for tests.
 
 ## Prior art
 

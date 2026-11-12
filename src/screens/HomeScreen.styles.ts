@@ -54,4 +54,15 @@ export const styles = StyleSheet.create({
     marginTop: 26,
     paddingHorizontal: 12,
   },
+  about: {
+    alignSelf: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    marginTop: 6,
+  },
+  aboutText: {
+    color: colors.text,
+    fontSize: 14,
+    fontWeight: '600',
+  },
 });

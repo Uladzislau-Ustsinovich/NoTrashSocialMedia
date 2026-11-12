@@ -14,6 +14,11 @@ export function addUsage(platformId: string, seconds: number, now = new Date()):
   store.update((log) => addSeconds(log, platformId, seconds, now));
 }
 
+/** Erases the whole usage history. */
+export function clearUsage(): void {
+  store.update(() => ({}));
+}
+
 export function useUsage(): { hydrated: boolean; log: UsageLog } {
   const { hydrated, value } = store.useStore();
   return { hydrated, log: value };

@@ -9,7 +9,7 @@ NoTrashSocialMedia is a React Native (Expo) app that loads Instagram, YouTube an
 ## Commands
 
 - Install packages with `npx expo install <package>`, never `npm install`, so versions match the SDK.
-- Run `npm run typecheck` before calling a task done. There are no tests or lint config yet.
+- Run `npm run typecheck` and `npm test` before calling a task done. Pipe `tsc` output through `head`; a missing type package prints hundreds of lines.
 
 ## Expo notes
 
@@ -29,11 +29,15 @@ NoTrashSocialMedia is a React Native (Expo) app that loads Instagram, YouTube an
 - Styles live next to their component or screen in `<Name>.styles.ts`, never inline in the `.tsx`.
 - Stateful logic goes in `src/hooks/`, pure helpers in `src/utils/`; screens compose them.
 - Platforms are shown as monogram tiles, never logos.
-- No backend, no analytics.
+- Saved state lives in stores built with `createPersistedStore` (`toggles:v1`, `usage:v1`, `focus:v1` in AsyncStorage). Change values with `update`, never by writing a whole object from a stale read.
+- A gate (pause or daily limit) replaces the WebView rather than covering it, so nothing loads or plays behind it and no time is counted.
+- No backend, no analytics. `PRIVACY.md`, the About screen and `docs/store-listing.md` all state that nothing is collected; keep them true and in step when behaviour changes.
 
 ## Verifying filters
 
 In development the page posts a report 4 seconds after each navigation, logged by Metro as `[filters] {"counts": {...}}`: how many elements each enabled toggle matched. A count of 0 on a page where the element should exist means the selector is stale.
+
+To preset saved state without tapping (Expo Go must be terminated), edit the `manifest.json` under `…/ExponentExperienceData/@anonymous/no-trash-social-media-*/RCTAsyncLocalStorage/` in the simulator's Expo Go data container; values are JSON strings keyed by the store names above.
 
 To drive the simulator without tapping (Xcode is at `/Applications/Xcode.app`, but `xcode-select` points at the command line tools, so set `DEVELOPER_DIR`):
 

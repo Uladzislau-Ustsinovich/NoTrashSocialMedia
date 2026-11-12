@@ -4,6 +4,7 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { PlatformCard } from '@/components/PlatformCard';
+import { PressableScale } from '@/components/PressableScale';
 import { useNow } from '@/hooks/useNow';
 import { PLATFORMS } from '@/platforms';
 import { useAllFocusSettings } from '@/store/focus';
@@ -69,6 +70,13 @@ export default function HomeScreen() {
             <Text style={styles.footnote}>
               Filters run on your device. Nothing you do here is collected.
             </Text>
+            <PressableScale
+              accessibilityRole="link"
+              onPress={() => router.push('/about')}
+              style={styles.about}
+            >
+              <Text style={styles.aboutText}>About and privacy</Text>
+            </PressableScale>
           </Animated.View>
         </>
       ) : null}
