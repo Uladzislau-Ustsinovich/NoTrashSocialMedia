@@ -6,24 +6,14 @@ Guidance for Claude Code when working in this repository.
 
 NoTrashSocialMedia is a React Native (Expo) app that loads Instagram, YouTube and X in in-app WebViews and hides doomscrolling surfaces (Reels, Shorts, Stories, Explore, For You) through injected CSS/JS. Overview and open items in `README.md`.
 
-**Current state:** Instagram and X are offered in the app, with filters verified against signed-in pages in the iOS simulator. YouTube's manifest exists but is `hidden: true` until sign-in is sorted out. The app has a hello animation on launch, a home screen with platform cards, a browser screen and a grouped filters screen.
-
 ## Commands
 
-```bash
-npx expo start              # dev server; the app runs in Expo Go (react-native-webview is bundled there)
-npm run typecheck           # tsc --noEmit
-npx expo-doctor             # dependency and config check
-npx expo install <package>  # always use this instead of npm install, so versions match the SDK
-```
-
-Run the typecheck before calling a task done. There are no tests or lint config yet.
+- Install packages with `npx expo install <package>`, never `npm install`, so versions match the SDK.
+- Run `npm run typecheck` before calling a task done. There are no tests or lint config yet.
 
 ## Expo notes
 
-- Expo SDK 58, React Native 0.88. Expo APIs change between SDKs: check `https://docs.expo.dev/versions/v58.0.0/` rather than relying on memory.
-- Routes live in `src/app/` (Expo Router). Keep non-route code outside it. `@/` maps to `src/`.
-- There are no `ios/` or `android/` folders; native config goes in `app.json` and config plugins.
+- Expo APIs change between SDKs: check `https://docs.expo.dev/versions/v58.0.0/` rather than relying on memory.
 - Type the WebView ref as `useRef<WebView<{}>>`; the default type parameter makes every prop `never`.
 
 ## Decisions
@@ -34,13 +24,8 @@ Run the typecheck before calling a task done. There are no tests or lint config 
 
 ## Architecture
 
-- `src/platforms/<site>.ts`: one manifest per site. A toggle can use `css` selectors (hidden with `display: none`), `blockRoutes` (paths redirected to the site's home), `hideByText` (containers identified by an English UI label such as "Suggested for you"), `redirects` (an exact path sent to a preferred variant) and `autoClick` (leave a view the switch removes). Adding or fixing a filter means editing a manifest, not the engine.
-- `src/engine/runtime.ts`: ES5 script, kept as a string, that runs inside the site before its own scripts. It keeps a `<style>` element in sync, runs the text and click rules from a debounced `MutationObserver`, sets `html[data-nt-path]` so selectors can be scoped to one page, patches `history.pushState`/`replaceState` to catch in-page navigation, and skips everything on `authPaths`.
-- `src/engine/buildInjection.ts`: turns a manifest plus the enabled switches into the config the runtime applies, on page load and again live when a switch changes.
-- `src/components/`: `WelcomeOverlay` (hello animation, once per launch; the home screen mounts its content when `src/store/welcome.ts` reports it finished), `PressableScale` (press feedback), `PlatformCard`.
-- `src/theme.ts`: colours, radii and spacing. The accent is lime `#C6F45D`; platforms are shown as monogram tiles, never logos.
-- `src/store/toggles.ts`: switches saved in AsyncStorage. Only changed switches are stored; the rest follow `defaultOn`.
-- `src/app/browser/[platform].tsx`: the WebView. Accepts an optional `url` param for a start page on the same site.
+- Adding or fixing a filter means editing a manifest in `src/platforms/`, not the engine.
+- Platforms are shown as monogram tiles, never logos.
 - No backend, no analytics.
 
 ## Verifying filters
@@ -69,7 +54,3 @@ xcrun simctl io booted screenshot out.png
 - When probing a signed-in page, log structure only (tags, roles, `data-testid`, UI labels). Never log post text, usernames or message content.
 - On X, `data-testid="placementTracking"` also wraps ordinary videos; ads are identified by `*-impression-pixel`.
 - Hiding most of Instagram's "For you" feed leaves it stuck on a spinner, which is why "Following feed only" is on by default.
-
-## Skills
-
-`vercel-react-native-skills` is installed in `.claude/skills/`. Use it when writing React Native or Expo code (lists, animations, navigation, native modules).
