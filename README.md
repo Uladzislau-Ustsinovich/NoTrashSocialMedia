@@ -6,7 +6,7 @@ It opens the mobile web version of each site in an in-app browser and hides the 
 
 It is a free alternative to paid apps such as SocialLite, ScrollGuard, BackToLife and Dull.
 
-> **Status:** Instagram and X work with filters verified on signed-in pages. YouTube is hidden in the app until sign-in is sorted out. See [PLAN.md](PLAN.md).
+> **Status:** Instagram and X work with filters verified on signed-in pages. YouTube is hidden in the app until sign-in is sorted out.
 
 ## Run it
 
@@ -43,6 +43,15 @@ Each switch is defined in `src/platforms/`. Suggested posts and ads on Instagram
 - Features missing from the mobile web versions stay missing (for example posting Stories or voice notes on Instagram).
 - Filters depend on each site's page structure and break when the sites change it.
 - The sites' terms of service do not welcome wrappers, and app stores sometimes reject them. A store release is planned (iOS first, then Android), so the app ships native features of its own on top of the filtering.
+
+## Open items
+
+- YouTube is hidden. Before re-enabling: sign-in (Google may refuse embedded browsers) and the "Home feed" switch.
+- Instagram "Suggested posts" and "Ads" match English labels only.
+- Instagram's "For you" feed sticks on a spinner when most of it is hidden; use the Following feed.
+- X Explore still shows "Who to follow" and "Posts For You".
+- No unit tests yet.
+- Store release: app name, bundle identifier, icon, privacy policy and licence are undecided.
 
 ## Stack
 

@@ -1,4 +1,4 @@
-export type PlatformId = 'instagram' | 'youtube' | 'x';
+type PlatformId = 'instagram' | 'youtube' | 'x';
 
 /** Section a switch is listed under on the filters screen. */
 export type ToggleGroup = 'Feed' | 'Navigation';

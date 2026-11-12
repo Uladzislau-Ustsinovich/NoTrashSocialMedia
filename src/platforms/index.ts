@@ -3,7 +3,7 @@ import type { Platform } from './types';
 import { x } from './x';
 import { youtube } from './youtube';
 
-export type { Platform, PlatformId, Toggle, ToggleGroup } from './types';
+export type { Platform, Toggle, ToggleGroup } from './types';
 
 const ALL_PLATFORMS: readonly Platform[] = [instagram, youtube, x];
 

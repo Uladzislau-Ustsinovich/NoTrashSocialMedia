@@ -155,7 +155,6 @@ export const RUNTIME = `(function () {
   new MutationObserver(scheduleRules).observe(document.documentElement, { childList: true, subtree: true });
 
   window.__NT = {
-    apply: function (next) { cfg = next; check(); },
-    report: report
+    apply: function (next) { cfg = next; check(); }
   };
 })();`;
