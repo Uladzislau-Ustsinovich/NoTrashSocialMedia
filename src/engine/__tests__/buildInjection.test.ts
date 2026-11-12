@@ -1,6 +1,6 @@
 import type { Platform } from '@/platforms';
 
-import { buildConfig, buildInjection, buildUpdate } from '../buildInjection';
+import { GRAYSCALE_RULE, buildConfig, buildInjection, buildUpdate } from '../buildInjection';
 
 const platform: Platform = {
   id: 'instagram',
@@ -51,6 +51,12 @@ describe('buildConfig', () => {
     expect(config.authPaths).toEqual(['/login']);
     expect(config.home).toBe('https://example.com/');
     expect(config.debug).toBe(true);
+  });
+
+  it('adds the grayscale rule after the filter rules when asked', () => {
+    expect(buildConfig(platform, () => false, false, { grayscale: true }).css).toBe(GRAYSCALE_RULE);
+    expect(buildConfig(platform, (id) => id === 'css', false, { grayscale: true }).css.endsWith(GRAYSCALE_RULE)).toBe(true);
+    expect(buildConfig(platform, () => true).css).not.toContain('grayscale');
   });
 
   it('produces nothing when every switch is off', () => {

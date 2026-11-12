@@ -6,9 +6,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { PlatformCard } from '@/components/PlatformCard';
 import { useNow } from '@/hooks/useNow';
 import { PLATFORMS } from '@/platforms';
+import { useAllFocusSettings } from '@/store/focus';
 import { useToggleState } from '@/store/toggles';
 import { useUsageLog } from '@/store/usage';
 import { useWelcomeDone } from '@/store/welcome';
+import { focusFor } from '@/utils/focus';
 import { greeting } from '@/utils/greeting';
 import { countActiveToggles } from '@/utils/toggles';
 import { secondsOn } from '@/utils/usage';
@@ -23,6 +25,7 @@ export default function HomeScreen() {
   const { overrides } = useToggleState();
   const welcomeDone = useWelcomeDone();
   const usage = useUsageLog();
+  const focus = useAllFocusSettings();
   const now = useNow();
 
   return (
@@ -51,6 +54,7 @@ export default function HomeScreen() {
                   platform={platform}
                   activeCount={countActiveToggles(platform, overrides)}
                   secondsToday={secondsOn(usage, platform.id, now)}
+                  limitMinutes={focusFor(focus, platform.id).dailyLimitMinutes}
                   onOpen={() =>
                     router.push({ pathname: '/browser/[platform]', params: { platform: platform.id } })
                   }

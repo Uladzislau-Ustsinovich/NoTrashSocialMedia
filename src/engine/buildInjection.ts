@@ -2,6 +2,9 @@ import type { Platform } from '@/platforms/types';
 
 import { RUNTIME } from './runtime';
 
+/** Drains the colour from the whole page. */
+export const GRAYSCALE_RULE = 'html{filter:grayscale(1) !important}';
+
 export type InjectionConfig = {
   css: string;
   blockRoutes: string[];
@@ -19,6 +22,7 @@ export function buildConfig(
   platform: Platform,
   isEnabled: (toggleId: string) => boolean,
   debug = false,
+  options: { grayscale?: boolean } = {},
 ): InjectionConfig {
   const rules: string[] = [];
   const blockRoutes: string[] = [];
@@ -43,6 +47,8 @@ export function buildConfig(
     redirects.push(...(toggle.redirects ?? []));
     blockRoutes.push(...(toggle.blockRoutes ?? []));
   }
+
+  if (options.grayscale) rules.push(GRAYSCALE_RULE);
 
   return {
     css: rules.join('\n'),

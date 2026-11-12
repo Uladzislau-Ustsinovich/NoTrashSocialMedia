@@ -3,6 +3,7 @@ import { Stack } from 'expo-router';
 import { ScrollView, Text, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
+import { FocusSection } from '@/components/FocusSection';
 import { PressableScale } from '@/components/PressableScale';
 import { ToggleRow } from '@/components/ToggleRow';
 import { usePlatformParam } from '@/hooks/usePlatformParam';
@@ -26,6 +27,7 @@ export default function SettingsScreen() {
     );
   }
 
+  const sections = groupToggles(platform);
   const resetToDefaults = () => {
     void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     resetToggles(platform.toggles.map((toggle) => toggle.id));
@@ -45,7 +47,7 @@ export default function SettingsScreen() {
         </Text>
       </Animated.View>
 
-      {groupToggles(platform).map((section, sectionIndex) => (
+      {sections.map((section, sectionIndex) => (
         <Animated.View
           key={section.group}
           entering={sectionEntering(sectionIndex)}
@@ -56,7 +58,8 @@ export default function SettingsScreen() {
             {section.toggles.map((toggle, index) => (
               <ToggleRow
                 key={toggle.id}
-                toggle={toggle}
+                label={toggle.label}
+                description={toggle.description}
                 on={isToggleOn(toggle, overrides)}
                 divider={index > 0}
                 onChange={(on) => setToggle(toggle.id, on)}
@@ -65,6 +68,13 @@ export default function SettingsScreen() {
           </View>
         </Animated.View>
       ))}
+
+      <Animated.View entering={sectionEntering(sections.length)} style={styles.section}>
+        <Text style={styles.sectionTitle}>FOCUS</Text>
+        <View style={styles.group}>
+          <FocusSection platform={platform} />
+        </View>
+      </Animated.View>
 
       {hasOverrides(platform, overrides) ? (
         <PressableScale accessibilityRole="button" onPress={resetToDefaults} style={styles.reset}>

@@ -3,6 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 
 import { WelcomeOverlay } from '@/components/WelcomeOverlay';
+import { hydrateFocus } from '@/store/focus';
 import { hydrateToggles } from '@/store/toggles';
 import { hydrateUsage } from '@/store/usage';
 import { colors } from '@/theme';
@@ -19,6 +20,7 @@ export default function RootLayout() {
   useEffect(() => {
     void hydrateToggles();
     void hydrateUsage();
+    void hydrateFocus();
   }, []);
 
   return (

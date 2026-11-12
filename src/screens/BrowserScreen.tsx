@@ -6,7 +6,10 @@ import { WebView } from 'react-native-webview';
 import type { WebViewMessageEvent } from 'react-native-webview';
 
 import { BrowserToolbar } from '@/components/BrowserToolbar';
+import { LimitGate } from '@/components/LimitGate';
 import { LoadProgressBar } from '@/components/LoadProgressBar';
+import { PauseGate } from '@/components/PauseGate';
+import { useAccessGate } from '@/hooks/useAccessGate';
 import { useFilterInjection } from '@/hooks/useFilterInjection';
 import { useLoadProgress } from '@/hooks/useLoadProgress';
 import { usePlatformParam } from '@/hooks/usePlatformParam';
@@ -32,7 +35,10 @@ export default function BrowserScreen() {
   const navigation = useWebViewNavigation(webViewRef);
   const { barStyle, onLoadProgress } = useLoadProgress();
   const { ready, injection } = useFilterInjection(platform, webViewRef);
-  useUsageTimer(platform?.id);
+  const access = useAccessGate(platform?.id);
+  const showingSite = ready && access.ready && access.gate === 'open';
+  // Time only counts while the site itself is on screen, not a gate or a blank placeholder.
+  useUsageTimer(showingSite ? platform?.id : undefined);
 
   if (!platform) {
     return (
@@ -43,9 +49,40 @@ export default function BrowserScreen() {
     );
   }
 
-  if (!ready) return <View style={styles.container} />;
+  if (!ready || !access.ready) return <View style={styles.container} />;
 
   const { id, homeUrl } = platform;
+  const leave = () => (router.canGoBack() ? router.back() : router.replace('/'));
+
+  // The WebView is not mounted behind a gate, so nothing loads or plays until it opens.
+  if (access.gate === 'limit') {
+    return (
+      <SafeAreaView style={styles.container} edges={SAFE_AREA_EDGES}>
+        <Stack.Screen options={{ title: platform.name }} />
+        <LimitGate
+          platformName={platform.name}
+          limitMinutes={access.settings.dailyLimitMinutes}
+          secondsToday={access.secondsToday}
+          onLeave={leave}
+          onExtend={access.extend}
+        />
+      </SafeAreaView>
+    );
+  }
+
+  if (access.gate === 'pause') {
+    return (
+      <SafeAreaView style={styles.container} edges={SAFE_AREA_EDGES}>
+        <Stack.Screen options={{ title: platform.name }} />
+        <PauseGate
+          platformName={platform.name}
+          seconds={access.settings.pauseSeconds}
+          onDone={access.finishPause}
+          onCancel={leave}
+        />
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container} edges={SAFE_AREA_EDGES}>
