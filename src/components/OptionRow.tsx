@@ -31,7 +31,7 @@ export function OptionRow({ label, description, options, value, format, divider,
             <PressableScale
               key={option}
               accessibilityRole="radio"
-              accessibilityState={{ selected }}
+              accessibilityState={{ checked: selected }}
               accessibilityLabel={format(option)}
               pressedScale={0.92}
               onPress={() => {

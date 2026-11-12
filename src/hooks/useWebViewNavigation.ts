@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { RefObject } from 'react';
 import { BackHandler } from 'react-native';
 import type { WebView, WebViewNavigation } from 'react-native-webview';
@@ -6,14 +6,21 @@ import type { WebViewOpenWindowEvent } from 'react-native-webview/lib/WebViewTyp
 
 import { isWebUrl, navigateScript } from '@/utils/webview';
 
-/** Back/forward state and navigation actions for a WebView, including the Android hardware back button. */
-export function useWebViewNavigation(webViewRef: RefObject<WebView<{}> | null>) {
+/**
+ * Back/forward state and navigation actions for a WebView, including the Android hardware back
+ * button. `active` is false while the WebView is not on screen (behind a gate), so the back
+ * button is not captured for a page that is not there.
+ */
+export function useWebViewNavigation(webViewRef: RefObject<WebView<{}> | null>, active: boolean) {
   const [canGoBack, setCanGoBack] = useState(false);
   const [canGoForward, setCanGoForward] = useState(false);
+  /** The page last shown, so the site can reopen where the user was after a gate. */
+  const lastUrl = useRef<string | undefined>(undefined);
 
   const onNavigationStateChange = useCallback((state: WebViewNavigation) => {
     setCanGoBack(state.canGoBack);
     setCanGoForward(state.canGoForward);
+    if (isWebUrl(state.url)) lastUrl.current = state.url;
   }, []);
 
   const goBack = useCallback(() => webViewRef.current?.goBack(), [webViewRef]);
@@ -35,13 +42,13 @@ export function useWebViewNavigation(webViewRef: RefObject<WebView<{}> | null>) 
 
   // Android hardware back steps through page history before leaving the screen.
   useEffect(() => {
-    if (!canGoBack) return;
+    if (!active || !canGoBack) return;
     const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
       goBack();
       return true;
     });
     return () => subscription.remove();
-  }, [canGoBack, goBack]);
+  }, [active, canGoBack, goBack]);
 
-  return { canGoBack, canGoForward, onNavigationStateChange, onOpenWindow, goBack, goForward, reload, goTo };
+  return { canGoBack, canGoForward, lastUrl, onNavigationStateChange, onOpenWindow, goBack, goForward, reload, goTo };
 }

@@ -1,4 +1,4 @@
-import { USAGE_DAYS_KEPT, addSeconds, countElapsed, dayKey, formatDuration, secondsOn } from '../usage';
+import { USAGE_DAYS_KEPT, addSeconds, countElapsed, dayKey, formatDuration, secondsOn, usageLine } from '../usage';
 
 const day = (n: number) => new Date(2026, 0, n, 12);
 
@@ -68,5 +68,14 @@ describe('formatDuration', () => {
     [3900, '1 h 5 min'],
   ])('%i seconds -> %s', (seconds, text) => {
     expect(formatDuration(seconds)).toBe(text);
+  });
+});
+
+describe('usageLine', () => {
+  it('shows time alone, or against a limit', () => {
+    expect(usageLine(720)).toBe('12 min today');
+    expect(usageLine(720, '30 min')).toBe('12 min of 30 min today');
+    expect(usageLine(0, '1 h')).toBe('0 min of 1 h today');
+    expect(usageLine(20)).toBe('under a minute today');
   });
 });

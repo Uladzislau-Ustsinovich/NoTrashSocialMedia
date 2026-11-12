@@ -1,5 +1,5 @@
 import { Stack, useRouter } from 'expo-router';
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { WebView } from 'react-native-webview';
@@ -32,11 +32,19 @@ export default function BrowserScreen() {
 
   // The explicit `{}` matters: WebView's default type parameter collapses its props to `never`.
   const webViewRef = useRef<WebView<{}>>(null);
-  const navigation = useWebViewNavigation(webViewRef);
   const { barStyle, onLoadProgress } = useLoadProgress();
   const { ready, injection } = useFilterInjection(platform, webViewRef);
   const access = useAccessGate(platform?.id);
   const showingSite = ready && access.ready && access.gate === 'open';
+  const navigation = useWebViewNavigation(webViewRef, showingSite);
+
+  // A gate unmounts the WebView. Remember where the user was so "more minutes" resumes there.
+  // Held in state, not read from the ref, because a changing `source` would reload the page.
+  const [resumeUrl, setResumeUrl] = useState<string>();
+  const { lastUrl } = navigation;
+  useEffect(() => {
+    if (access.gate === 'limit') setResumeUrl(lastUrl.current);
+  }, [access.gate, lastUrl]);
   // Time only counts while the site itself is on screen, not a gate or a blank placeholder.
   useUsageTimer(showingSite ? platform?.id : undefined);
 
@@ -90,7 +98,7 @@ export default function BrowserScreen() {
       <LoadProgressBar barStyle={barStyle} />
       <WebView
         ref={webViewRef}
-        source={{ uri: resolveStartUrl(url, homeUrl) }}
+        source={{ uri: resolveStartUrl(resumeUrl ?? url, homeUrl) }}
         style={styles.webView}
         userAgent={USER_AGENT}
         injectedJavaScriptBeforeContentLoaded={injection}

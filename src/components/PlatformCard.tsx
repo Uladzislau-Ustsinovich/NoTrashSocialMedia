@@ -4,7 +4,7 @@ import { Text, View } from 'react-native';
 import type { Platform } from '@/platforms';
 import { colors } from '@/theme';
 import { limitLabel } from '@/utils/focus';
-import { formatDuration } from '@/utils/usage';
+import { usageLine } from '@/utils/usage';
 
 import { styles } from './PlatformCard.styles';
 import { PressableScale } from './PressableScale';
@@ -19,12 +19,6 @@ type Props = {
   onOpen: () => void;
   onOpenFilters: () => void;
 };
-
-/** "12 min today", or "12 min of 30 min today" when a limit is set. */
-function usageLine(secondsToday: number, limitMinutes: number): string {
-  const spent = secondsToday > 0 ? formatDuration(secondsToday) : '0 min';
-  return limitMinutes > 0 ? `${spent} of ${limitLabel(limitMinutes)} today` : `${spent} today`;
-}
 
 export function PlatformCard({ platform, activeCount, secondsToday, limitMinutes, onOpen, onOpenFilters }: Props) {
   return (
@@ -49,7 +43,7 @@ export function PlatformCard({ platform, activeCount, secondsToday, limitMinutes
           </Text>
         </View>
         {secondsToday > 0 || limitMinutes > 0 ? (
-          <Text style={styles.usage}>{usageLine(secondsToday, limitMinutes)}</Text>
+          <Text style={styles.usage}>{usageLine(secondsToday, limitMinutes > 0 ? limitLabel(limitMinutes) : undefined)}</Text>
         ) : null}
       </View>
       <PressableScale

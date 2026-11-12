@@ -56,3 +56,9 @@ export function formatDuration(seconds: number): string {
   const rest = minutes % 60;
   return rest === 0 ? `${hours} h` : `${hours} h ${rest} min`;
 }
+
+/** Home-card line: "12 min today", or "12 min of 30 min today" when `limitText` is given. */
+export function usageLine(secondsToday: number, limitText?: string): string {
+  const spent = secondsToday > 0 ? formatDuration(secondsToday) : '0 min';
+  return limitText ? `${spent} of ${limitText} today` : `${spent} today`;
+}
