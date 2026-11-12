@@ -70,6 +70,7 @@ See [docs/release.md](docs/release.md) for the App Store steps and [docs/store-l
 - YouTube is hidden. Before re-enabling: sign-in (Google may refuse embedded browsers) and the "Home feed" switch.
 - Instagram "Suggested posts" and "Ads" match English labels only.
 - Instagram's "For you" feed sticks on a spinner when most of it is hidden; use the Following feed.
+- The browser identifies itself with a fixed Safari version string (`src/utils/webview.ts`), which needs refreshing now and then.
 - X Explore still shows "Who to follow" and "Posts For You".
 - Store release: needs an Apple Developer account, a public address for the privacy policy, screenshots and demo accounts for review. The bundle identifier in `app.json` is a default to confirm before the first upload.
 

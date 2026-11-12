@@ -82,4 +82,21 @@ describe('usage store', () => {
     const saved = JSON.parse((await AsyncStorage.getItem('usage:v1')) ?? '{}');
     expect(secondsOn(saved, 'x', when)).toBe(60);
   });
+
+  it('deletes days past the retention window when loading', async () => {
+    await AsyncStorage.setItem('usage:v1', JSON.stringify({ '2026-01-01': { x: 5 }, '2026-03-01': { x: 7 } }));
+    const { hydrateUsage } = loadStore();
+    await hydrateUsage(new Date(2026, 2, 2, 9));
+    await Promise.resolve();
+    expect(JSON.parse((await AsyncStorage.getItem('usage:v1')) ?? '')).toEqual({ '2026-03-01': { x: 7 } });
+  });
+
+  it('erases everything on request', async () => {
+    const { addUsage, clearUsage, hydrateUsage } = loadStore();
+    await hydrateUsage();
+    addUsage('x', 40);
+    clearUsage();
+    await Promise.resolve();
+    expect(await AsyncStorage.getItem('usage:v1')).toBe('{}');
+  });
 });

@@ -1,12 +1,17 @@
-import { addSeconds } from '@/utils/usage';
+import { addSeconds, pruneUsage } from '@/utils/usage';
 import type { UsageLog } from '@/utils/usage';
 
 import { createPersistedStore } from './createPersistedStore';
 
 const store = createPersistedStore<UsageLog>('usage:v1', {});
 
-/** Loads the saved usage log once at app start. */
-export const hydrateUsage = store.hydrate;
+/** Loads the saved usage log once at app start and deletes days past the retention window. */
+export async function hydrateUsage(now = new Date()): Promise<void> {
+  await store.hydrate();
+  const log = store.get();
+  const pruned = pruneUsage(log, now);
+  if (Object.keys(pruned).length !== Object.keys(log).length) store.update(() => pruned);
+}
 
 /** Records time spent on a platform. Stays on the device. */
 export function addUsage(platformId: string, seconds: number, now = new Date()): void {

@@ -4,7 +4,7 @@ Guidance for Claude Code when working in this repository.
 
 ## Project
 
-NoTrashSocialMedia is a React Native (Expo) app that loads Instagram, YouTube and X in in-app WebViews and hides doomscrolling surfaces (Reels, Shorts, Stories, Explore, For You) through injected CSS/JS. Overview and open items in `README.md`.
+NoTrash (repository `NoTrashSocialMedia`) is a React Native (Expo) app that loads Instagram and X in in-app WebViews (YouTube's manifest exists but is hidden) and hides doomscrolling surfaces (Reels, Shorts, Stories, Explore, For You) through injected CSS/JS. Overview and open items in `README.md`.
 
 ## Commands
 

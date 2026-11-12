@@ -15,17 +15,24 @@ export function secondsOn(log: UsageLog, platformId: string, date: Date): number
   return log[dayKey(date)]?.[platformId] ?? 0;
 }
 
-/** Returns a new log with `seconds` added for the platform on `date`, and days outside the retention window dropped. */
+/** The log without days outside the retention window that ends on `date` (future days included). */
+export function pruneUsage(log: UsageLog, date: Date): UsageLog {
+  const newest = dayKey(date);
+  const oldest = dayKey(
+    new Date(date.getFullYear(), date.getMonth(), date.getDate() - (USAGE_DAYS_KEPT - 1)),
+  );
+  const kept: Record<string, Readonly<Record<string, number>>> = {};
+  // Day keys compare chronologically as strings.
+  for (const [key, value] of Object.entries(log)) {
+    if (key >= oldest && key <= newest) kept[key] = value;
+  }
+  return kept;
+}
+
+/** Returns a new log with `seconds` added for the platform on `date`, and old days dropped. */
 export function addSeconds(log: UsageLog, platformId: string, seconds: number, date: Date): UsageLog {
   const today = dayKey(date);
-  const oldest = new Date(date.getFullYear(), date.getMonth(), date.getDate() - (USAGE_DAYS_KEPT - 1));
-  const oldestKey = dayKey(oldest);
-
-  const next: Record<string, Readonly<Record<string, number>>> = {};
-  // Day keys compare chronologically as strings. Future keys (clock set back) are dropped too.
-  for (const [key, value] of Object.entries(log)) {
-    if (key >= oldestKey && key <= today) next[key] = value;
-  }
+  const next = { ...pruneUsage(log, date) };
   next[today] = { ...next[today], [platformId]: (next[today]?.[platformId] ?? 0) + seconds };
   return next;
 }

@@ -12,6 +12,11 @@
       "bundleIdentifier": "com.uladzislauustsinovich.notrash",
       "config": {
         "usesNonExemptEncryption": false
+      },
+      "infoPlist": {
+        "NSCameraUsageDescription": "Lets you take a photo or video to upload to a site you have opened. NoTrash itself does not use the camera.",
+        "NSMicrophoneUsageDescription": "Lets you record sound for a video you upload to a site you have opened. NoTrash itself does not use the microphone.",
+        "NSPhotoLibraryAddUsageDescription": "Lets you save an image from a site to your photo library."
       }
     },
     "android": {

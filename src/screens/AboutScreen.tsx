@@ -3,7 +3,7 @@ import Constants from 'expo-constants';
 import * as Haptics from 'expo-haptics';
 import * as Linking from 'expo-linking';
 import { useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { Alert, ScrollView, Text, View } from 'react-native';
 
 import { PressableScale } from '@/components/PressableScale';
 import { clearUsage } from '@/store/usage';
@@ -17,10 +17,23 @@ export default function AboutScreen() {
   const [erased, setErased] = useState(false);
   const version = Constants.expoConfig?.version ?? '';
 
-  const eraseUsage = () => {
-    void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    clearUsage();
-    setErased(true);
+  const confirmErase = () => {
+    Alert.alert(
+      'Erase usage history?',
+      'This deletes the time recorded for every site, including today, so today\'s daily limits start again. It cannot be undone.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Erase',
+          style: 'destructive',
+          onPress: () => {
+            void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+            clearUsage();
+            setErased(true);
+          },
+        },
+      ],
+    );
   };
 
   return (
@@ -63,7 +76,7 @@ export default function AboutScreen() {
           <PressableScale
             accessibilityRole="button"
             disabled={erased}
-            onPress={eraseUsage}
+            onPress={confirmErase}
             style={styles.danger}
           >
             <Text style={styles.dangerText}>{erased ? 'Usage history erased' : 'Erase usage history'}</Text>
@@ -87,7 +100,9 @@ function LinkRow({ label, url }: { label: string; url: string }) {
     <PressableScale
       accessibilityRole="link"
       pressedScale={0.98}
-      onPress={() => void Linking.openURL(url)}
+      onPress={() => {
+        Linking.openURL(url).catch(() => Alert.alert('Could not open the link', url));
+      }}
       style={styles.link}
     >
       <Text style={styles.linkText}>{label}</Text>

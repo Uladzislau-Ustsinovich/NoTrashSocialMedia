@@ -1,4 +1,4 @@
-import { USAGE_DAYS_KEPT, addSeconds, countElapsed, dayKey, formatDuration, secondsOn, usageLine } from '../usage';
+import { USAGE_DAYS_KEPT, addSeconds, countElapsed, dayKey, formatDuration, pruneUsage, secondsOn, usageLine } from '../usage';
 
 const day = (n: number) => new Date(2026, 0, n, 12);
 
@@ -77,5 +77,14 @@ describe('usageLine', () => {
     expect(usageLine(720, '30 min')).toBe('12 min of 30 min today');
     expect(usageLine(0, '1 h')).toBe('0 min of 1 h today');
     expect(usageLine(20)).toBe('under a minute today');
+  });
+});
+
+describe('pruneUsage', () => {
+  it('drops days outside the window without adding anything', () => {
+    const log = { '2026-01-01': { x: 5 }, '2026-01-10': { x: 7 }, '2026-02-01': { x: 9 } };
+    expect(pruneUsage(log, day(14))).toEqual({ '2026-01-01': { x: 5 }, '2026-01-10': { x: 7 } });
+    expect(pruneUsage(log, day(20))).toEqual({ '2026-01-10': { x: 7 } });
+    expect(pruneUsage({}, day(1))).toEqual({});
   });
 });
