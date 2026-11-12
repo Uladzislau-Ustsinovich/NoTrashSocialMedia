@@ -11,7 +11,12 @@ export const hydrateUsage = store.hydrate;
 /** Records time spent on a platform. Stays on the device. */
 export function addUsage(platformId: string, seconds: number, now = new Date()): void {
   if (seconds <= 0) return;
-  store.set(addSeconds(store.get(), platformId, seconds, now));
+  store.update((log) => addSeconds(log, platformId, seconds, now));
+}
+
+export function useUsage(): { hydrated: boolean; log: UsageLog } {
+  const { hydrated, value } = store.useStore();
+  return { hydrated, log: value };
 }
 
 export function useUsageLog(): UsageLog {

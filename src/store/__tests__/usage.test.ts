@@ -28,18 +28,44 @@ describe('createPersistedStore', () => {
     warn.mockRestore();
   });
 
-  it('saves every change', async () => {
+  it('saves every change made after loading', async () => {
     const store = createPersistedStore('k', 0);
-    store.set(5);
+    await store.hydrate();
+    store.update(() => 5);
     await Promise.resolve();
     expect(await AsyncStorage.getItem('k')).toBe('5');
+  });
+
+  it('replays changes made before loading on top of the saved value', async () => {
+    await AsyncStorage.setItem('k', JSON.stringify({ saved: 1 }));
+    const store = createPersistedStore<Record<string, number>>('k', {});
+
+    store.update((value) => ({ ...value, early: 2 }));
+    expect(store.get()).toEqual({ early: 2 });
+    expect(JSON.parse((await AsyncStorage.getItem('k')) ?? '')).toEqual({ saved: 1 });
+
+    await store.hydrate();
+    await Promise.resolve();
+    expect(store.get()).toEqual({ saved: 1, early: 2 });
+    expect(JSON.parse((await AsyncStorage.getItem('k')) ?? '')).toEqual({ saved: 1, early: 2 });
   });
 });
 
 describe('usage store', () => {
+  /** A fresh copy of the store module, so tests do not share its in-memory state. */
+  function loadStore() {
+    let store!: typeof import('../usage');
+    jest.isolateModules(() => {
+      store = require('../usage');
+    });
+    return store;
+  }
+
+  beforeEach(() => AsyncStorage.clear());
+
   it('ignores zero and negative durations', async () => {
-    await AsyncStorage.clear();
-    const { addUsage } = require('../usage') as typeof import('../usage');
+    const { addUsage, hydrateUsage } = loadStore();
+    await hydrateUsage();
     addUsage('x', 0);
     addUsage('x', -3);
     await Promise.resolve();
@@ -47,8 +73,8 @@ describe('usage store', () => {
   });
 
   it('adds time to the given day', async () => {
-    await AsyncStorage.clear();
-    const { addUsage } = require('../usage') as typeof import('../usage');
+    const { addUsage, hydrateUsage } = loadStore();
+    await hydrateUsage();
     const when = new Date(2026, 4, 2, 9);
     addUsage('x', 40, when);
     addUsage('x', 20, when);

@@ -8,14 +8,16 @@ const store = createPersistedStore<ToggleOverrides>('toggles:v1', {});
 export const hydrateToggles = store.hydrate;
 
 export function setToggle(id: string, on: boolean): void {
-  store.set({ ...store.get(), [id]: on });
+  store.update((overrides) => ({ ...overrides, [id]: on }));
 }
 
 /** Puts the given switches back to their defaults. */
 export function resetToggles(ids: string[]): void {
-  const overrides = { ...store.get() };
-  for (const id of ids) delete overrides[id];
-  store.set(overrides);
+  store.update((current) => {
+    const overrides = { ...current };
+    for (const id of ids) delete overrides[id];
+    return overrides;
+  });
 }
 
 export function useToggleState(): { hydrated: boolean; overrides: ToggleOverrides } {

@@ -4,6 +4,7 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { PlatformCard } from '@/components/PlatformCard';
+import { useNow } from '@/hooks/useNow';
 import { PLATFORMS } from '@/platforms';
 import { useToggleState } from '@/store/toggles';
 import { useUsageLog } from '@/store/usage';
@@ -22,7 +23,7 @@ export default function HomeScreen() {
   const { overrides } = useToggleState();
   const welcomeDone = useWelcomeDone();
   const usage = useUsageLog();
-  const now = new Date();
+  const now = useNow();
 
   return (
     <ScrollView

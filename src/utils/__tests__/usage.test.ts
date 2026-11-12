@@ -1,4 +1,4 @@
-import { USAGE_DAYS_KEPT, addSeconds, dayKey, formatDuration, secondsOn } from '../usage';
+import { USAGE_DAYS_KEPT, addSeconds, countElapsed, dayKey, formatDuration, secondsOn } from '../usage';
 
 const day = (n: number) => new Date(2026, 0, n, 12);
 
@@ -21,13 +21,40 @@ describe('addSeconds', () => {
     expect(secondsOn(other, 'x', day(2))).toBe(0);
   });
 
-  it('drops the oldest days beyond the retention limit', () => {
-    let log = {};
-    for (let n = 1; n <= USAGE_DAYS_KEPT + 3; n++) log = addSeconds(log, 'x', 1, day(n));
+  it('keeps a window of calendar days, however few of them have entries', () => {
+    let log = addSeconds({}, 'x', 1, day(1));
+    log = addSeconds(log, 'x', 1, day(USAGE_DAYS_KEPT));
+    expect(secondsOn(log, 'x', day(1))).toBe(1);
 
-    expect(Object.keys(log)).toHaveLength(USAGE_DAYS_KEPT);
-    expect(secondsOn(log, 'x', day(3))).toBe(0);
-    expect(secondsOn(log, 'x', day(4))).toBe(1);
+    log = addSeconds(log, 'x', 1, day(USAGE_DAYS_KEPT + 1));
+    expect(secondsOn(log, 'x', day(1))).toBe(0);
+    expect(secondsOn(log, 'x', day(USAGE_DAYS_KEPT))).toBe(1);
+  });
+
+  it('keeps the new entry and drops future days when the clock is set back', () => {
+    const ahead = addSeconds({}, 'x', 9, day(20));
+    const back = addSeconds(ahead, 'x', 5, day(10));
+
+    expect(secondsOn(back, 'x', day(10))).toBe(5);
+    expect(secondsOn(back, 'x', day(20))).toBe(0);
+  });
+});
+
+describe('countElapsed', () => {
+  const MAX = 30_000;
+
+  it('counts whole seconds and carries the remainder', () => {
+    expect(countElapsed(1_000, 3_700, MAX)).toEqual({ seconds: 2, countedUntil: 3_000 });
+    expect(countElapsed(3_000, 3_900, MAX)).toEqual({ seconds: 0, countedUntil: 3_000 });
+    expect(countElapsed(3_000, 4_000, MAX)).toEqual({ seconds: 1, countedUntil: 4_000 });
+  });
+
+  it('caps a forward clock jump at the longest plausible gap', () => {
+    expect(countElapsed(0, 3_600_000, MAX)).toEqual({ seconds: 30, countedUntil: 3_600_000 });
+  });
+
+  it('counts nothing and resyncs when the clock goes backwards', () => {
+    expect(countElapsed(10_000, 4_000, MAX)).toEqual({ seconds: 0, countedUntil: 4_000 });
   });
 });
 

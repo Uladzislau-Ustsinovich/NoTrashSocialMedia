@@ -3,8 +3,11 @@ import { useCallback } from 'react';
 import { AppState } from 'react-native';
 
 import { addUsage } from '@/store/usage';
+import { countElapsed } from '@/utils/usage';
 
 const FLUSH_INTERVAL_MS = 15_000;
+/** Longest gap between flushes still treated as real time; anything longer is a clock jump. */
+const MAX_GAP_MS = 2 * FLUSH_INTERVAL_MS;
 
 /**
  * Counts time on a platform while its screen is focused and the app is in the foreground.
@@ -24,12 +27,9 @@ export function useUsageTimer(platformId: string | undefined): void {
           countedUntil = now;
           return;
         }
-        const seconds = Math.floor((now - countedUntil) / 1000);
-        if (seconds > 0) {
-          addUsage(platformId, seconds);
-          // Keep the sub-second remainder for the next flush.
-          countedUntil += seconds * 1000;
-        }
+        const counted = countElapsed(countedUntil, now, MAX_GAP_MS);
+        countedUntil = counted.countedUntil;
+        if (counted.seconds > 0) addUsage(platformId, counted.seconds);
       };
 
       const interval = setInterval(flush, FLUSH_INTERVAL_MS);
