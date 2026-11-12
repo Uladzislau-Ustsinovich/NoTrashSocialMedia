@@ -1,14 +1,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSyncExternalStore } from 'react';
 
-import type { Toggle } from '@/platforms/types';
+import type { ToggleOverrides } from '@/utils/toggles';
 
 const STORAGE_KEY = 'toggles:v1';
 
-/** Only switches the user has changed are stored; everything else follows `defaultOn`. */
-type Overrides = Readonly<Record<string, boolean>>;
-
-type State = { hydrated: boolean; overrides: Overrides };
+type State = { hydrated: boolean; overrides: ToggleOverrides };
 
 let state: State = { hydrated: false, overrides: {} };
 const listeners = new Set<() => void>();
@@ -30,7 +27,7 @@ const getSnapshot = () => state;
 /** Loads saved switches once at app start. A read failure falls back to defaults. */
 export async function hydrateToggles(): Promise<void> {
   if (state.hydrated) return;
-  let overrides: Overrides = {};
+  let overrides: ToggleOverrides = {};
   try {
     const raw = await AsyncStorage.getItem(STORAGE_KEY);
     if (raw) overrides = JSON.parse(raw);
@@ -56,10 +53,6 @@ export function resetToggles(ids: string[]): void {
   AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(overrides)).catch((error) => {
     console.warn('Could not save filters.', error);
   });
-}
-
-export function isToggleOn(toggle: Toggle, overrides: Overrides): boolean {
-  return overrides[toggle.id] ?? toggle.defaultOn;
 }
 
 export function useToggleState(): State {

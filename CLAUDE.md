@@ -25,6 +25,9 @@ NoTrashSocialMedia is a React Native (Expo) app that loads Instagram, YouTube an
 ## Architecture
 
 - Adding or fixing a filter means editing a manifest in `src/platforms/`, not the engine.
+- Route files in `src/app/` only re-export a screen from `src/screens/`; anything else placed in `src/app/` becomes a route.
+- Styles live next to their component or screen in `<Name>.styles.ts`, never inline in the `.tsx`.
+- Stateful logic goes in `src/hooks/`, pure helpers in `src/utils/`; screens compose them.
 - Platforms are shown as monogram tiles, never logos.
 - No backend, no analytics.
 
