@@ -10,7 +10,11 @@ export type FocusSettings = {
 /** Saved settings by platform id; missing fields follow `DEFAULT_FOCUS`. */
 export type FocusByPlatform = Readonly<Record<string, Partial<FocusSettings>>>;
 
-export const DEFAULT_FOCUS: FocusSettings = { pauseSeconds: 0, dailyLimitMinutes: 0, grayscale: false };
+export const DEFAULT_FOCUS: FocusSettings = {
+  pauseSeconds: 0,
+  dailyLimitMinutes: 0,
+  grayscale: false,
+};
 
 export const PAUSE_OPTIONS: readonly number[] = [0, 5, 10, 20];
 export const LIMIT_OPTIONS: readonly number[] = [0, 15, 30, 60, 120];

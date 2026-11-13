@@ -9,7 +9,8 @@ NoTrash (repository `NoTrashSocialMedia`) is a React Native (Expo) app that load
 ## Commands
 
 - Install packages with `npx expo install <package>`, never `npm install`, so versions match the SDK.
-- Run `npm run typecheck` and `npm test` before calling a task done. Pipe `tsc` output through `head`; a missing type package prints hundreds of lines.
+- Run `npm run check` before calling a task done (typecheck, ESLint, Prettier check, tests). `npm run lint:fix` and `npm run format` fix what can be fixed automatically.
+- When running `tsc` on its own, pipe its output through `head`; a missing type package prints hundreds of lines.
 
 ## Expo notes
 
@@ -26,7 +27,10 @@ NoTrash (repository `NoTrashSocialMedia`) is a React Native (Expo) app that load
 
 - Adding or fixing a filter means editing a manifest in `src/platforms/`, not the engine.
 - Route files in `src/app/` only re-export a screen from `src/screens/`; anything else placed in `src/app/` becomes a route.
-- Styles live next to their component or screen in `<Name>.styles.ts`, never inline in the `.tsx`.
+- Styles live next to their component or screen in `<Name>.styles.ts`, never inline in the `.tsx` (enforced by ESLint).
+- Import across folders with the `@/` alias (`@/utils/usage`); `../` imports are a lint error. Same-folder imports stay relative (`./Name.styles`).
+- Set Reanimated shared values with `.set()` and read them with `.get()`; the React lint rules reject `.value =`.
+- The React rules also reject `setState` in an effect body, reading refs during render and impure calls such as `Date.now()` during render. Fix the code (derive the value, adjust state during render, or move it to an event or subscription callback) instead of disabling the rule.
 - Stateful logic goes in `src/hooks/`, pure helpers in `src/utils/`; screens compose them.
 - Platforms are shown as monogram tiles, never logos.
 - Saved state lives in stores built with `createPersistedStore` (`toggles:v1`, `usage:v1`, `focus:v1` in AsyncStorage). Change values with `update`, never by writing a whole object from a stale read.

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { extendLimit, useExtendedUntil, useFocusSettings } from '@/store/focus';
 import { useUsage } from '@/store/usage';
@@ -10,6 +10,9 @@ import { useNow } from './useNow';
 /** What stands between the user and the platform: nothing, the pause, or today's limit. */
 type Gate = 'open' | 'pause' | 'limit';
 
+/** How often the limit is re-checked against the clock: extensions and midnight end on time, not on a usage update. */
+const CLOCK_TICK_MS = 5000;
+
 /**
  * Decides whether a platform may be shown. The limit wins over the pause. `ready` is false until
  * saved settings and usage have loaded, so the page never flashes before a gate appears.
@@ -19,32 +22,19 @@ export function useAccessGate(platformId: string | undefined) {
   const { hydrated: usageReady, log } = useUsage();
   const extendedUntil = useExtendedUntil(platformId);
   const ready = focusReady && usageReady;
-  // Refreshes on focus and when the app returns, so a limit screen left open overnight clears.
-  const refreshedAt = useNow();
-  const [, setTick] = useState(0);
+  const now = useNow(CLOCK_TICK_MS);
   /** The platform whose entry pause is over: it ran, or the site opened without one. */
   const [enteredId, setEnteredId] = useState<string>();
 
-  // An extension ends on the clock, not on a usage update, so re-check when it runs out.
-  useEffect(() => {
-    const remaining = extendedUntil - Date.now();
-    if (remaining <= 0) return;
-    const timer = setTimeout(() => setTick((tick) => tick + 1), remaining + 50);
-    return () => clearTimeout(timer);
-  }, [extendedUntil]);
-
-  const now = Math.max(refreshedAt.getTime(), Date.now());
-  const secondsToday = platformId ? secondsOn(log, platformId, new Date(now)) : 0;
+  const secondsToday = platformId ? secondsOn(log, platformId, now) : 0;
 
   let gate: Gate = 'open';
-  if (isOverLimit(settings, secondsToday, extendedUntil, now)) gate = 'limit';
+  if (isOverLimit(settings, secondsToday, extendedUntil, now.getTime())) gate = 'limit';
   else if (settings.pauseSeconds > 0 && enteredId !== platformId) gate = 'pause';
 
   // The pause guards entry only. Once the site has opened, switching the pause on in the filters
-  // screen must not close the page that is already showing.
-  useEffect(() => {
-    if (ready && gate === 'open' && platformId) setEnteredId(platformId);
-  }, [ready, gate, platformId]);
+  // screen must not close the page that is already showing. (State adjusted during render.)
+  if (ready && gate === 'open' && platformId && enteredId !== platformId) setEnteredId(platformId);
 
   return {
     ready,

@@ -45,6 +45,10 @@ export function extendLimit(platformId: string, now = Date.now()): void {
 
 /** Timestamp (ms) until which the platform's limit is lifted, or 0. */
 export function useExtendedUntil(platformId: string | undefined): number {
-  const all = useSyncExternalStore(subscribeToExtensions, () => extendedUntil, () => extendedUntil);
+  const all = useSyncExternalStore(
+    subscribeToExtensions,
+    () => extendedUntil,
+    () => extendedUntil,
+  );
   return all[platformId ?? ''] ?? 0;
 }

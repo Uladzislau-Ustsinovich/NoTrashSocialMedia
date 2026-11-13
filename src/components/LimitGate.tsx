@@ -27,7 +27,8 @@ export function LimitGate({ platformName, limitMinutes, secondsToday, onLeave, o
       <View style={styles.text}>
         <Text style={styles.title}>That's today's {platformName}.</Text>
         <Text style={styles.body}>
-          You set a limit of {limitLabel(limitMinutes)} a day and have spent {formatDuration(secondsToday)}.
+          You set a limit of {limitLabel(limitMinutes)} a day and have spent{' '}
+          {formatDuration(secondsToday)}.
         </Text>
       </View>
       <View style={styles.actions}>

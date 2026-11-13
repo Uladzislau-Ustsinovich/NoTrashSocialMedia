@@ -4,7 +4,10 @@ import { useEffect, useRef, useState } from 'react';
 export function useCountdown(seconds: number, onDone: () => void): number {
   const [left, setLeft] = useState(seconds);
   const onDoneRef = useRef(onDone);
-  onDoneRef.current = onDone;
+  // Keep the latest callback without restarting the countdown.
+  useEffect(() => {
+    onDoneRef.current = onDone;
+  });
 
   useEffect(() => {
     if (left <= 0) {

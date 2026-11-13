@@ -13,7 +13,9 @@ const letterEntering = (index: number) =>
   FadeInDown.delay(START_DELAY + index * LETTER_STAGGER)
     .duration(520)
     .easing(Easing.out(Easing.cubic));
-const taglineEntering = FadeIn.delay(START_DELAY + LETTERS.length * LETTER_STAGGER + 200).duration(500);
+const taglineEntering = FadeIn.delay(START_DELAY + LETTERS.length * LETTER_STAGGER + 200).duration(
+  500,
+);
 
 /** Greets the user once per app launch, then fades away to reveal the home screen. */
 export function WelcomeOverlay() {

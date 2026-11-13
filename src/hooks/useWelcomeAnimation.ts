@@ -25,8 +25,8 @@ export function useWelcomeAnimation() {
 
   useEffect(() => {
     const hold = reducedMotion ? REDUCED_MOTION_HOLD_MS : HOLD_MS;
-    opacity.value = withDelay(hold, withTiming(0, EXIT));
-    if (!reducedMotion) scale.value = withDelay(hold, withTiming(1.08, EXIT));
+    opacity.set(withDelay(hold, withTiming(0, EXIT)));
+    if (!reducedMotion) scale.set(withDelay(hold, withTiming(1.08, EXIT)));
 
     const reveal = setTimeout(finishWelcome, hold);
     const remove = setTimeout(() => setVisible(false), hold + EXIT_MS);
@@ -36,8 +36,8 @@ export function useWelcomeAnimation() {
     };
   }, [opacity, scale, reducedMotion]);
 
-  const overlayStyle = useAnimatedStyle(() => ({ opacity: opacity.value }));
-  const contentStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
+  const overlayStyle = useAnimatedStyle(() => ({ opacity: opacity.get() }));
+  const contentStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.get() }] }));
 
   return { visible, overlayStyle, contentStyle };
 }

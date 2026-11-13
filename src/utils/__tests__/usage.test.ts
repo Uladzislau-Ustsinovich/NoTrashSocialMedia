@@ -1,4 +1,13 @@
-import { USAGE_DAYS_KEPT, addSeconds, countElapsed, dayKey, formatDuration, pruneUsage, secondsOn, usageLine } from '../usage';
+import {
+  USAGE_DAYS_KEPT,
+  addSeconds,
+  countElapsed,
+  dayKey,
+  formatDuration,
+  pruneUsage,
+  secondsOn,
+  usageLine,
+} from '@/utils/usage';
 
 const day = (n: number) => new Date(2026, 0, n, 12);
 

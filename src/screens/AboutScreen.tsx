@@ -20,7 +20,7 @@ export default function AboutScreen() {
   const confirmErase = () => {
     Alert.alert(
       'Erase usage history?',
-      'This deletes the time recorded for every site, including today, so today\'s daily limits start again. It cannot be undone.',
+      "This deletes the time recorded for every site, including today, so today's daily limits start again. It cannot be undone.",
       [
         { text: 'Cancel', style: 'cancel' },
         {
@@ -79,7 +79,9 @@ export default function AboutScreen() {
             onPress={confirmErase}
             style={styles.danger}
           >
-            <Text style={styles.dangerText}>{erased ? 'Usage history erased' : 'Erase usage history'}</Text>
+            <Text style={styles.dangerText}>
+              {erased ? 'Usage history erased' : 'Erase usage history'}
+            </Text>
           </PressableScale>
         </View>
       </View>

@@ -69,7 +69,8 @@ export const instagram: Platform = {
     {
       id: 'ig.reels',
       label: 'Reels tab',
-      description: 'Removes the Reels button and blocks the Reels feed. Reels sent in messages still open.',
+      description:
+        'Removes the Reels button and blocks the Reels feed. Reels sent in messages still open.',
       group: 'Navigation',
       defaultOn: true,
       css: barItem('a[href="/reels/"]', SHALLOW),

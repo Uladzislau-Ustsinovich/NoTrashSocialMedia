@@ -1,5 +1,14 @@
+import type { RefObject } from 'react';
 import { Platform } from 'react-native';
+import type { WebView } from 'react-native-webview';
 import type { ShouldStartLoadRequest } from 'react-native-webview/lib/WebViewTypes';
+
+/**
+ * Ref to the site's WebView. The explicit `{}` matters: WebView's default type parameter
+ * collapses its props to `never`.
+ */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export type WebViewRef = RefObject<WebView<{}> | null>;
 
 /**
  * Sites treat embedded browsers differently from real ones (Google refuses sign-in

@@ -30,7 +30,12 @@ export function pruneUsage(log: UsageLog, date: Date): UsageLog {
 }
 
 /** Returns a new log with `seconds` added for the platform on `date`, and old days dropped. */
-export function addSeconds(log: UsageLog, platformId: string, seconds: number, date: Date): UsageLog {
+export function addSeconds(
+  log: UsageLog,
+  platformId: string,
+  seconds: number,
+  date: Date,
+): UsageLog {
   const today = dayKey(date);
   const next = { ...pruneUsage(log, date) };
   next[today] = { ...next[today], [platformId]: (next[today]?.[platformId] ?? 0) + seconds };

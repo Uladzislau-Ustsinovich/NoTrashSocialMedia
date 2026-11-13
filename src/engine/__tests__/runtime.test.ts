@@ -1,7 +1,7 @@
 import vm from 'node:vm';
 
-import type { InjectionConfig } from '../buildInjection';
-import { RUNTIME } from '../runtime';
+import type { InjectionConfig } from '@/engine/buildInjection';
+import { RUNTIME } from '@/engine/runtime';
 
 /** A page stub with just enough DOM for the runtime: one style element, history and location. */
 function createPage(pathname: string, search = '', hostname = 'site.test') {

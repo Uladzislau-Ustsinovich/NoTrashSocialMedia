@@ -1,9 +1,12 @@
-import { DEFAULT_FOCUS, focusFor, isOverLimit, limitLabel, pauseLabel } from '../focus';
+import { DEFAULT_FOCUS, focusFor, isOverLimit, limitLabel, pauseLabel } from '@/utils/focus';
 
 describe('focusFor', () => {
   it('fills missing fields with defaults', () => {
     expect(focusFor({}, 'x')).toEqual(DEFAULT_FOCUS);
-    expect(focusFor({ x: { grayscale: true } }, 'x')).toEqual({ ...DEFAULT_FOCUS, grayscale: true });
+    expect(focusFor({ x: { grayscale: true } }, 'x')).toEqual({
+      ...DEFAULT_FOCUS,
+      grayscale: true,
+    });
     expect(focusFor({ other: { grayscale: true } }, 'x')).toEqual(DEFAULT_FOCUS);
   });
 });

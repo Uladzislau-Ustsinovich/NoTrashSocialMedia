@@ -20,7 +20,14 @@ type Props = {
   onOpenFilters: () => void;
 };
 
-export function PlatformCard({ platform, activeCount, secondsToday, limitMinutes, onOpen, onOpenFilters }: Props) {
+export function PlatformCard({
+  platform,
+  activeCount,
+  secondsToday,
+  limitMinutes,
+  onOpen,
+  onOpenFilters,
+}: Props) {
   return (
     <PressableScale
       accessibilityRole="button"
@@ -43,7 +50,9 @@ export function PlatformCard({ platform, activeCount, secondsToday, limitMinutes
           </Text>
         </View>
         {secondsToday > 0 || limitMinutes > 0 ? (
-          <Text style={styles.usage}>{usageLine(secondsToday, limitMinutes > 0 ? limitLabel(limitMinutes) : undefined)}</Text>
+          <Text style={styles.usage}>
+            {usageLine(secondsToday, limitMinutes > 0 ? limitLabel(limitMinutes) : undefined)}
+          </Text>
         ) : null}
       </View>
       <PressableScale

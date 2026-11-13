@@ -8,16 +8,16 @@ export function useLoadProgress() {
   const opacity = useSharedValue(0);
 
   const barStyle = useAnimatedStyle(() => ({
-    opacity: opacity.value,
-    transform: [{ scaleX: progress.value }],
+    opacity: opacity.get(),
+    transform: [{ scaleX: progress.get() }],
   }));
 
   const onLoadProgress = useCallback(
     (event: WebViewProgressEvent) => {
       const value = event.nativeEvent.progress;
       const done = value >= 1;
-      progress.value = withTiming(Math.max(value, 0.08), { duration: 180 });
-      opacity.value = withTiming(done ? 0 : 1, { duration: done ? 350 : 120 });
+      progress.set(withTiming(Math.max(value, 0.08), { duration: 180 }));
+      opacity.set(withTiming(done ? 0 : 1, { duration: done ? 350 : 120 }));
     },
     [progress, opacity],
   );

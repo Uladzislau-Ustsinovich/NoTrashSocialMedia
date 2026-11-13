@@ -1,6 +1,5 @@
 import type { Platform } from '@/platforms';
-
-import { countActiveToggles, groupToggles, hasOverrides, isToggleOn } from '../toggles';
+import { countActiveToggles, groupToggles, hasOverrides, isToggleOn } from '@/utils/toggles';
 
 const platform: Platform = {
   id: 'x',

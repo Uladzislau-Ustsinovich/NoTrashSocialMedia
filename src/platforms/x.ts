@@ -23,7 +23,8 @@ export const x: Platform = {
         {
           paths: ['/home'],
           when: 'nav[role="navigation"] [role="tablist"] > [role="presentation"]:first-child [role="tab"][aria-selected="true"]',
-          click: 'nav[role="navigation"] [role="tablist"] > [role="presentation"]:nth-child(2) [role="tab"]',
+          click:
+            'nav[role="navigation"] [role="tablist"] > [role="presentation"]:nth-child(2) [role="tab"]',
         },
       ],
     },

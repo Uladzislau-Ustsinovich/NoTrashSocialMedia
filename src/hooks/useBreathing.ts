@@ -15,12 +15,10 @@ export function useBreathing() {
 
   useEffect(() => {
     if (reducedMotion) return;
-    scale.value = withRepeat(
-      withTiming(1.14, { duration: 2400, easing: Easing.inOut(Easing.quad) }),
-      -1,
-      true,
+    scale.set(
+      withRepeat(withTiming(1.14, { duration: 2400, easing: Easing.inOut(Easing.quad) }), -1, true),
     );
   }, [scale, reducedMotion]);
 
-  return useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
+  return useAnimatedStyle(() => ({ transform: [{ scale: scale.get() }] }));
 }

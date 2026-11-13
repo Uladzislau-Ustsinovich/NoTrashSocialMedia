@@ -1,8 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import { createPersistedStore } from '@/store/createPersistedStore';
+import type * as UsageStore from '@/store/usage';
 import { secondsOn } from '@/utils/usage';
-
-import { createPersistedStore } from '../createPersistedStore';
 
 describe('createPersistedStore', () => {
   beforeEach(() => AsyncStorage.clear());
@@ -53,10 +53,10 @@ describe('createPersistedStore', () => {
 
 describe('usage store', () => {
   /** A fresh copy of the store module, so tests do not share its in-memory state. */
-  function loadStore() {
-    let store!: typeof import('../usage');
+  function loadStore(): typeof UsageStore {
+    let store!: typeof UsageStore;
     jest.isolateModules(() => {
-      store = require('../usage');
+      store = require('@/store/usage');
     });
     return store;
   }
@@ -84,11 +84,16 @@ describe('usage store', () => {
   });
 
   it('deletes days past the retention window when loading', async () => {
-    await AsyncStorage.setItem('usage:v1', JSON.stringify({ '2026-01-01': { x: 5 }, '2026-03-01': { x: 7 } }));
+    await AsyncStorage.setItem(
+      'usage:v1',
+      JSON.stringify({ '2026-01-01': { x: 5 }, '2026-03-01': { x: 7 } }),
+    );
     const { hydrateUsage } = loadStore();
     await hydrateUsage(new Date(2026, 2, 2, 9));
     await Promise.resolve();
-    expect(JSON.parse((await AsyncStorage.getItem('usage:v1')) ?? '')).toEqual({ '2026-03-01': { x: 7 } });
+    expect(JSON.parse((await AsyncStorage.getItem('usage:v1')) ?? '')).toEqual({
+      '2026-03-01': { x: 7 },
+    });
   });
 
   it('erases everything on request', async () => {

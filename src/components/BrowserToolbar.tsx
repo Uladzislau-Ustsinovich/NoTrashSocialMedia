@@ -29,7 +29,12 @@ export function BrowserToolbar({
   return (
     <View style={styles.toolbar}>
       <ToolbarButton icon="chevron-back" label="Back" disabled={!canGoBack} onPress={onBack} />
-      <ToolbarButton icon="chevron-forward" label="Forward" disabled={!canGoForward} onPress={onForward} />
+      <ToolbarButton
+        icon="chevron-forward"
+        label="Forward"
+        disabled={!canGoForward}
+        onPress={onForward}
+      />
       <ToolbarButton icon="refresh" label="Reload" onPress={onReload} />
       <ToolbarButton icon="home-outline" label="Home" onPress={onHome} />
       <ToolbarButton icon="options-outline" label="Filters" highlighted onPress={onOpenFilters} />
@@ -50,7 +55,13 @@ function iconColor(disabled: boolean, highlighted: boolean): string {
   return highlighted ? colors.accent : colors.text;
 }
 
-function ToolbarButton({ icon, label, disabled = false, highlighted = false, onPress }: ToolbarButtonProps) {
+function ToolbarButton({
+  icon,
+  label,
+  disabled = false,
+  highlighted = false,
+  onPress,
+}: ToolbarButtonProps) {
   return (
     <PressableScale
       accessibilityRole="button"

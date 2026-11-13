@@ -29,11 +29,11 @@ Nothing leaves the device: there is no backend, no account and no analytics.
 
 ## Filters
 
-| Platform | Switches |
-|---|---|
-| Instagram | Feed: Following feed only, Reels in feed, Suggested posts, Ads, Stories, All posts. Navigation: Reels tab, Explore grid, Search tab, Messages tab, Notifications |
-| YouTube (hidden) | Shorts tab, Shorts in feeds, Shorts player, Home feed, Comments |
-| X | For You, Ads, Trending, Grok |
+| Platform         | Switches                                                                                                                                                         |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Instagram        | Feed: Following feed only, Reels in feed, Suggested posts, Ads, Stories, All posts. Navigation: Reels tab, Explore grid, Search tab, Messages tab, Notifications |
+| YouTube (hidden) | Shorts tab, Shorts in feeds, Shorts player, Home feed, Comments                                                                                                  |
+| X                | For You, Ads, Trending, Grok                                                                                                                                     |
 
 Each switch is defined in `src/platforms/`. Suggested posts and ads on Instagram are recognised by their English labels, so they need the site language set to English.
 
@@ -54,12 +54,17 @@ Set per site on its filters screen, under "Focus":
 
 The home screen shows the time spent on each site today. Usage time is kept on the device for 14 days and can be erased from the About screen.
 
-## Tests
+## Tests and code rules
 
 ```bash
+npm run check       # typecheck, lint, format check and tests in one go
 npm test            # Jest unit tests
 npm run typecheck
+npm run lint        # ESLint (Expo config plus project rules); lint:fix to auto-fix
+npm run format      # Prettier; format:check to verify only
 ```
+
+Project rules live in `eslint.config.js` and `.prettierrc.json`: imports across folders use the `@/` alias (which maps to `src/`), imports are ordered, type imports are separate, styles stay in `<Name>.styles.ts`, and `console.log` is not allowed.
 
 ## Releasing
 

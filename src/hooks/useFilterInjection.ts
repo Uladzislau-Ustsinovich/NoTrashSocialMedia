@@ -1,12 +1,11 @@
 import { useEffect, useMemo } from 'react';
-import type { RefObject } from 'react';
-import type { WebView } from 'react-native-webview';
 
 import { buildConfig, buildInjection, buildUpdate } from '@/engine/buildInjection';
 import type { Platform } from '@/platforms';
 import { useFocusSettings } from '@/store/focus';
 import { useToggleState } from '@/store/toggles';
 import { isToggleOn } from '@/utils/toggles';
+import type { WebViewRef } from '@/utils/webview';
 
 /**
  * The filter script for a platform, built from the saved switches.
@@ -15,10 +14,7 @@ import { isToggleOn } from '@/utils/toggles';
  * re-applies the config to the page that is already open. `ready` is false until the saved
  * switches have loaded; mounting the WebView earlier would load the first page with defaults.
  */
-export function useFilterInjection(
-  platform: Platform | undefined,
-  webViewRef: RefObject<WebView<{}> | null>,
-) {
+export function useFilterInjection(platform: Platform | undefined, webViewRef: WebViewRef) {
   const { hydrated, overrides } = useToggleState();
   const { grayscale } = useFocusSettings(platform?.id).settings;
 

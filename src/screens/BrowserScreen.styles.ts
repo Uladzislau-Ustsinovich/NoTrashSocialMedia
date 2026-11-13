@@ -7,10 +7,6 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
-  webView: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
   missing: {
     flex: 1,
     alignItems: 'center',

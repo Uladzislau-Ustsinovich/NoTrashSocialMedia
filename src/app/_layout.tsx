@@ -32,7 +32,10 @@ export default function RootLayout() {
       <Stack screenOptions={screenOptions}>
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="browser/[platform]" options={{ title: '' }} />
-        <Stack.Screen name="settings/[platform]" options={{ title: 'Filters', presentation: 'modal' }} />
+        <Stack.Screen
+          name="settings/[platform]"
+          options={{ title: 'Filters', presentation: 'modal' }}
+        />
         <Stack.Screen name="about" options={{ title: 'About', presentation: 'modal' }} />
       </Stack>
       <WelcomeOverlay />

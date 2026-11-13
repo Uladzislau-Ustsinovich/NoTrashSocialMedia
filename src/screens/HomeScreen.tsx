@@ -57,10 +57,16 @@ export default function HomeScreen() {
                   secondsToday={secondsOn(usage, platform.id, now)}
                   limitMinutes={focusFor(focus, platform.id).dailyLimitMinutes}
                   onOpen={() =>
-                    router.push({ pathname: '/browser/[platform]', params: { platform: platform.id } })
+                    router.push({
+                      pathname: '/browser/[platform]',
+                      params: { platform: platform.id },
+                    })
                   }
                   onOpenFilters={() =>
-                    router.push({ pathname: '/settings/[platform]', params: { platform: platform.id } })
+                    router.push({
+                      pathname: '/settings/[platform]',
+                      params: { platform: platform.id },
+                    })
                   }
                 />
               </Animated.View>

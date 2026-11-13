@@ -1,6 +1,5 @@
+import { GRAYSCALE_RULE, buildConfig, buildInjection, buildUpdate } from '@/engine/buildInjection';
 import type { Platform } from '@/platforms';
-
-import { GRAYSCALE_RULE, buildConfig, buildInjection, buildUpdate } from '../buildInjection';
 
 const platform: Platform = {
   id: 'instagram',
@@ -11,8 +10,21 @@ const platform: Platform = {
   homeUrl: 'https://example.com/',
   authPaths: ['/login'],
   toggles: [
-    { id: 'css', label: '', group: 'Feed', defaultOn: true, css: ['.a', '.b'], blockRoutes: ['/reels'] },
-    { id: 'text', label: '', group: 'Feed', defaultOn: true, hideByText: [{ within: 'article', text: ['Ad'] }] },
+    {
+      id: 'css',
+      label: '',
+      group: 'Feed',
+      defaultOn: true,
+      css: ['.a', '.b'],
+      blockRoutes: ['/reels'],
+    },
+    {
+      id: 'text',
+      label: '',
+      group: 'Feed',
+      defaultOn: true,
+      hideByText: [{ within: 'article', text: ['Ad'] }],
+    },
     {
       id: 'nav',
       label: '',
@@ -60,7 +72,11 @@ describe('buildConfig', () => {
 
   it('adds the grayscale rule after the filter rules when asked', () => {
     expect(buildConfig(platform, () => false, false, { grayscale: true }).css).toBe(GRAYSCALE_RULE);
-    expect(buildConfig(platform, (id) => id === 'css', false, { grayscale: true }).css.endsWith(GRAYSCALE_RULE)).toBe(true);
+    expect(
+      buildConfig(platform, (id) => id === 'css', false, { grayscale: true }).css.endsWith(
+        GRAYSCALE_RULE,
+      ),
+    ).toBe(true);
     expect(buildConfig(platform, () => true).css).not.toContain('grayscale');
   });
 

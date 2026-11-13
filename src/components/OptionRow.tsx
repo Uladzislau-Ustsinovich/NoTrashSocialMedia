@@ -17,7 +17,15 @@ type Props = {
 };
 
 /** A setting chosen from a few fixed values, shown as a row of chips. */
-export function OptionRow({ label, description, options, value, format, divider, onChange }: Props) {
+export function OptionRow({
+  label,
+  description,
+  options,
+  value,
+  format,
+  divider,
+  onChange,
+}: Props) {
   return (
     <View style={[styles.row, divider ? styles.divider : null]}>
       <View style={styles.text}>

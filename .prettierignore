@@ -1,0 +1,10 @@
+node_modules
+ios
+android
+.expo
+dist
+package-lock.json
+skills-lock.json
+.claude
+assets
+expo-env.d.ts
